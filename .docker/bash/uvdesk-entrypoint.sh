@@ -42,6 +42,4 @@ service apache2 restart #&& service mysql restart;
 # Step down from sudo to uvdesk
 /usr/local/bin/gosu uvdesk "$@"
 
-cron
-
 exec "$@"
