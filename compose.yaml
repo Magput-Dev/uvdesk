@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+  app:
+    depends_on:
+      - db
+    tty: true
+    build: .
+    ports:
+      - "85:80"
+    restart: always
+    volumes:
+      - app_data:/var/www:rw
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: .docker.env
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  app_data:
+    driver: local
+  db_data:
+    driver: local

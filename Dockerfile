@@ -14,7 +14,6 @@ RUN apt-get update && apt-get -y upgrade \
         git \
         unzip \
         apache2 \
-        mysql-server \
         php7.4 \
         libapache2-mod-php7.4 \
         php7.4-common \
@@ -22,6 +21,7 @@ RUN apt-get update && apt-get -y upgrade \
         php7.4-imap \
         php7.4-mysql \
         php7.4-mailparse \
+        php7.4-curl \
         ca-certificates; \
     if ! command -v gpg; then \
 		apt-get install -y --no-install-recommends gnupg2 dirmngr; \
@@ -75,7 +75,10 @@ RUN \
         /var/www/uvdesk/.docker;
 
 # Change working directory to uvdesk source
-WORKDIR /var/www
+WORKDIR /var/www/
+
+RUN su - uvdesk -c 'composer install --working-dir=/var/www/uvdesk --no-interaction'
+# RUN crontab -l | { cat; echo "*/1 * * * * php /var/www/uvdesk/bin/console uvdesk:refresh-mailbox support@magput.ru"; } | crontab -
 
 ENTRYPOINT ["uvdesk-entrypoint.sh"]
 CMD ["/bin/bash"]
